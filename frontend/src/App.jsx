@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import FileDownload from 'js-file-download';
 
 function App() {
   const [allContacts, setAllContacts] = useState([]);
@@ -92,7 +93,12 @@ function App() {
 
   // Function to trigger download action
   const handleDownload = async () => {
-    axios.get('http://localhost:3000/api/contacts/export');
+    const res = await axios.get('http://localhost:3000/api/contacts/export', {
+      responseType: 'blob',
+    });
+    if (res.status === 200) {
+      FileDownload(res.data, 'contacts.csv');
+    }
   };
 
   return (

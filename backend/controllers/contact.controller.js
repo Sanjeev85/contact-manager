@@ -90,14 +90,6 @@ const updateContactById = async (req, res) => {
       return res.status(404).json({ message: 'Contact not found' });
     }
 
-    // Fetch the updated contact details from the database
-    const updatedContactDetails = await findContactById(id);
-    // Store the updated contact details in the Redis cache, replacing the previous cached data
-    // await redisClient.set(
-    //   `contact:${id}`,
-    //   JSON.stringify(updatedContactDetails)
-    // );
-
     await redisClient.flushdb();
 
     res
@@ -158,7 +150,6 @@ const exportContactsToCSV = async (req, res) => {
       return res.status(404).json({ message: 'No contacts found' });
     }
 
-    console.log('inside export functoin');
     // Define the CSV file path and create a writable stream
     const csvFilePath = path.join(__dirname, '..', '/static/', 'contacts.csv');
     const csvWriter = createObjectCsvWriter({
@@ -173,19 +164,11 @@ const exportContactsToCSV = async (req, res) => {
     // Write the contacts to the CSV file
     await csvWriter.writeRecords(contacts);
 
-    res.setHeader('Content-Disposition', `attachment; filename="contacts.csv"`);
+    res.setHeader('Content-Disposition', `attachment; filename=contacts.csv`);
 
-    const getFile = fs.readFileSync(csvFilePath);
-    res.send(getFile);
+    const file = fs.createReadStream(csvFilePath);
 
-    // console.log('save file at ', csvFilePath);
-
-    // // Stream the CSV file as a response for download
-
-    // res.download('./static/contacts.csv');
-
-    // Delete the temporary CSV file after streaming
-    fs.unlinkSync(csvFilePath);
+    file.pipe(res);
   } catch (err) {
     res.status(500).send('Internal Server Error');
   }
