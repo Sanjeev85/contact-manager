@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function ContactForm({ onAddContact }) {
+function ContactForm() {
   const [newContact, setNewContact] = useState({
     ContactName: '',
     email: '',
