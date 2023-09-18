@@ -10,6 +10,7 @@ This is a Contact Management Application that allows you to manage and interact 
 - Delete a contact.
 - Search for contacts by name.
 - Sort contacts by name or other relevant criteria.
+- Export contacts in csv format
 - Utilizes MongoDB for database storage.
 - Utilizes Redis for caching to improve performance.
 
